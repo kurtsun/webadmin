@@ -1,0 +1,95 @@
+{% extends "index.html" %}
+
+<html>
+	<head>
+		<title>{% block title %}batch{% endblock %}</title>
+	</head>
+	{% block content %}
+		<div class="row">
+			<hr></hr>
+			<div class='col-lg-12'>
+				<ol class="breadcrumb">
+					<li><a href="/batch">批量</a></li>
+					<li class="active">批量日志</li>
+				</ol>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-lg-12">
+			<table id="table" class="table table-hover">
+				<thead>
+					<tr>
+						<th>
+							用户
+						</th>
+						<th>
+							组
+						</th>
+						<th>
+							命令类型
+						</th>
+						<th>
+							命令
+						</th>	
+						<th>
+							执行时间
+						</th>
+						<th>
+							执行结束
+						</th>
+						<th>
+							节点信息
+						</th>
+						<th>
+							任务信息
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for a in audit_log %}
+					<tr>
+						<td>{{ a.user }}</td>
+						<td>{{ a.group }}</td>		
+						<td>{{ a.command_type }}</td>		
+						<td>{{ a.command }}</td>		
+						<td>{{ a.execute_time }}</td>		
+						<td>{{ a.finish_time }}</td>		
+						<td><font color=red>{{ a.node_status }}</font></td>		
+						<td>{{ a.task_status }}</td>		
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+
+			<nav>
+				<ul class="pagination pull-rigth">
+					{% if audit_log.has_previous %}
+					<li>
+						<a href="?page={{ audit_log.previous_page_number }}">上一页</a>
+					</li>
+					{% endif %}
+					{% for i in max %}
+					{% ifequal i page_current_id %}
+						<li class="active">
+							<a href="?page={{ i }}">{{ i }}</a>
+						</li>
+					{% else %}
+						<li>
+							<a href="?page={{ i }}">{{ i }}</a>
+						</li>
+					{% endifequal %}
+					{% endfor %}
+					{% if audit_log.has_next %}
+						<li>
+							<a href="?page={{ audit_log.next_page_number }}">下一页</a>
+						</li>
+					{% endif %}	
+				</ul>
+			</nav>	
+			</div>
+		<div>
+		
+		</script>
+	{% endblock %}
+</html>	

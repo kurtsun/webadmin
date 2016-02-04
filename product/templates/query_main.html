@@ -1,0 +1,53 @@
+{% extends "main.html" %}
+
+<html>
+	<head>
+		<title>{% block title %}query{% endblock %}</title>
+    </head>
+	<body>
+
+    {% block content %}
+	<select name="group_select" form="query_form">
+    	{% for e in entity %}          
+		<option>{{ e.group }}</option>
+    	{% endfor %}
+	</select>
+ 	<form action="?group={{ e.group }}" id="query_form">
+		<input type="submit" value="查询">
+	</form>
+
+	<table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>
+                            IP地址
+                        </th>
+                        <th>
+                            主机名
+                        </th>
+                        <th>
+                            操作系统
+                        </th>
+                        <th>
+                            分组
+                        </th>
+                        <th>
+                            操作
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for h in result %}
+                    <tr>
+                        <td>{{ h.ip_address }}</td>
+                        <td>{{ h.host_name }}</td>
+                        <td>{{ h.operation_system }}</td>
+                        <td>{{ h.group }}</td>
+                        <td><a href="/update/{{ h.id }}">更新</a>|<a href="/delhost/{{ h.id }}">删除</a>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+    {% endblock %}
+	</body>
+</html>

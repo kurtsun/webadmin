@@ -1,0 +1,64 @@
+{% extends "main.html" %}
+
+<html>
+	<head>
+		<title>{% block title %}batch add hosts{% endblock %}</title>
+	</head>
+    <body>
+	{% block content %}
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div class="span12">	
+				<ul class="nav nav-pills">
+					<br></br>
+					<li><a href="/main">Home</a><li>
+					<li class="active"><a href="add_host">config</a></li>
+				</ul>
+			</div>
+		</div>
+		<hr>
+		<div class="row-fluid">
+			<div class="span2">
+				<ul class="nav nav-list">
+					<li>
+						<a href="add_host">添加服务器</a>
+					</li>
+					<li>
+						<a href="add_data_center">添加机房</a>
+					</li>	
+					<li>
+						<a href="add_cabinet">添加机柜</a>
+					</li>	
+					<li class="active">
+						<a href="batch_add_hosts">批量添加</a>
+					</li>	
+				</ul>
+			</div>
+			<div class="span6">
+
+	<!-- <textarea rows="10" cols="100" name="comment" form="hostform"></textarea> -->
+    <form method="post" action="/batch_add_hosts" class="form-horizontal">
+	 <fieldset>
+	 	<div id="legend" class="">
+			<legend class="">批量添加</legend>
+		</div>
+	 	<div class="control-group">
+
+		  <label class="control-label" for="comment">批量添加</label>
+          <div class="controls">
+                  <textarea id="comment" placeholder="test" name="comment" type="text" style="margin: 0px; width: 341px; height: 144px; "> </textarea>
+			<p class="help-block">格式:主机,ip地址,操作系统,服务,机房,机柜,cpu,内存</p>
+	     </div>
+		<br></br>
+	 	<div class="control-group">
+		  <div class="controls">
+           		 <button class="btn btn-primary" name="submit" type="submit">保存</button>
+          </div>
+        </div>
+		</div>
+	</fieldset>
+	</form>
+    {% endblock %}
+	</body>
+</html>	
+ 

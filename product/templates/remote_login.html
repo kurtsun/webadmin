@@ -1,0 +1,106 @@
+{% extends "index.html" %}
+
+<html>
+	<head>
+		<title>{% block title %}remote login{% endblock %}</title>
+	</head>
+    <body>
+	{% block content %}
+		<div class="row">
+			<hr></hr>
+			<div class="col-lg-12">
+				<ol class="breadcrumb">
+  					<li><a href="/">远程登陆</a></li>
+  					<li class="active">登陆</li>
+				</ol>
+			<div>
+		</div>
+    			<!-- <div class="input-group">
+      				<input type="text" class="form-control" placeholder="Search for...">
+      				<span class="input-group-btn">
+        				<button class="btn btn-default" name="add_terminals" type="submit">开启终端</button>
+      				</span>
+    			</div> -->
+		<div class="row">
+			<div class="widget widget-nopad">
+			<div class="widget big-stats-container">
+				<div class="widget-content">
+					<div id="big_stats" class="cf">
+						<div class="stat">
+							<i>test</i>
+							<span class="value">{{ host_list|length }}</span>
+						</div>
+						<div class="stat">
+							<i>test1</i>
+							<span class="value">200</span>
+						</div>
+						<div class="stat">
+							<i>test2</i>
+							<span class="value">300</span>
+						</div>
+						<div class="stat">
+							<i>test3</i>
+							<span class="value">400</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			</div>
+		</div>
+			
+
+
+		</div>
+
+		<div class="row">
+	
+				<div class="col-lg-12">
+				
+				<div id="container" style="position: relative; width: 60em; height: 30em;">
+					<div id="gateone"></div>
+					
+				</div>
+				</div>
+		</div>
+		<div class="row">
+			
+				<div class="col-lg-12">
+				<form id="add_terminal">
+					<input type="submit" value="Add a Terminal" style="margin-left: .Sem;"></input>
+				</form>
+				</div>
+		</div>
+	</body>
+	<script>	
+    	window.onload = function() {
+        // Initialize Gate One:
+        	GateOne.init({
+            	url: 'https://{{ ip_address }}/',
+            	embedded: true,
+            // Let's apply some custom styles while we're at it...
+            	style: {'background-color': 'black'}
+            // Oh yeah, that's the way to style a terminal!
+        });
+    }
+	</script>	
+
+	<script>
+		document.querySelector('#add_terminal').onsubmit = function(e) {
+			e.preventDefault();
+			var existingContainer = GateOne.Utils.getNode('#'+GateOne.prefs.prefix+'container');
+			var container = GateOne.Utils.createElement('div',{'id':'container','class':'terminal','style':{'height':'100%','width':'100%'}});
+			var gateone = GateOne.Utils.getNode('#gateone');
+			if(!existingContainer) {
+				gateone.appendChild(container);
+			} else {
+				container = existingContainer;
+			}
+			
+			termNum = GateOne.Terminal.newTerminal(null,null,container);	
+			GateOne.Visual.displayMessage(GateOne.i18n.gettext("success to login"));
+	}
+	</script>
+	
+		{% endblock %}
+	
+	</html>

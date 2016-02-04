@@ -1,0 +1,153 @@
+{% load static %}
+
+<html>
+	<head>
+		<title>{% block title %}adsame host list{% endblock %}</title>
+ 		<link href="http://apps.bdimg.com/libs/bootstrap/2.3.2/css/bootstrap.min.css" rel="stylesheet">
+		<!-- <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.8.1/bootstrap-table.min.css"> -->
+		<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.8.1/locale/bootstrap-table-zh-CN.min.js"></script>
+		<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.8.1/bootstrap-table.min.js"></script> -->
+ 		<!-- <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script> -->
+ 		<!-- <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script> -->
+ 		<!-- <script type="text/javascript" src="{% static 'bootstrap/dist/js/bootstrap.js' %}"></script> -->
+		<script src="{% static 'bower_components/jquery/dist/jquery.js' %}"></script>
+		<script src="{% static 'bower_components/bootstrap/dist/js/bootstrap.js' %}"></script>
+		<script src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
+		<script src="{% static 'bower_components/bootstrap-table/dist/bootstrap-table.js' %}"></script>
+		<script src="{% static 'bower_components/bootstrap-table/dist/locale/bootstrap-table-zh-CN.js' %}"></script>
+ 		<script src="http://apps.bdimg.com/libs/bootstrap/2.3.2/js/bootstrap.min.js"></script>
+		<style>.row-fluid{height:75px}</style>
+
+	</head>
+    <body>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div class="span2" >
+				<!-- <img src="{% static 'img/logo1.jpg' %}" /> -->
+			</div>
+			<div class="span6">	
+				<ul class="nav nav-pills">
+					<br></br>
+					<li class="active"><a href="/main">Home</a><li>
+					<li><a href="#">config</a></li>
+				</ul>
+			</div>
+		</div>
+		<hr>
+		<!-- <div class="row-fluid">
+			<div class="span2">
+				<ul class="nav nav-list">
+					<li class="nav-header">
+					</li>
+					<li class="active">
+						<a href="main">服务器信息</a>
+					</li>
+                	<li>
+						<a href="/query/group">分组查询</a>
+					</li>
+                	<li>
+						<a href="/query/service ">服务查询</a>
+					</li>
+					</li>
+				</ul>
+		</div> -->
+		<div class="span6">
+			<p>机房: {% for d in data_center %}
+						&nbsp&nbsp <a href="?data_center={{ d.name }}">{{ d.name }}</a>
+					 {% endfor %}
+			</p>
+			<p>机柜: {% for c in cabinet %}
+						&nbsp&nbsp <a href="?cabinet={{ c.name }}">{{ c.name }}</a>
+					 {% endfor %}
+			</p>	
+		</div>
+		<div class="span6">
+        {%block content %}
+		<!-- <a href="manager_host">添加服务器</a>&nbsp&nbsp<a href="batch_add_hosts">批量导入</a> -->
+			<table id="table"
+                   class="table table-hover" 
+				   data-toggle="table"
+				   data-detail-formatter="detailFormatter"
+                   data-detail-view="true"
+				   data-url="json/data.json">
+					
+				{%block table_head%}
+				<thead>
+					<tr>
+						<th>
+							IP地址
+						</th>
+						<th>
+							主机名
+						</th>
+						<th>
+							操作系统
+						</th>
+						<th>
+							分组
+						</th>
+						<th>
+							机房
+						</th>
+						<th>
+							机柜
+						</th>
+					</tr>
+				</thead>
+				{% endblock %}
+				<tbody>
+					{% ifequal 
+					{% for h in host_list %}
+                    <tr>
+						<td>{{ h.ip_address }}</td>
+						<td>{{ h.host_name }}</td>
+			            <td>{{ h.operation_system }}</td>
+		  	            <td>{{ h.group }}</td>
+		  	            <td>{{ h.data_center }}</td>
+		  	            <td>{{ h.cabinet }}</td>
+                        <!-- <td><a href="/update/{{ h.id }}">更新</a>|<a href="/delhost/{{ h.id }}">删除</a> -->
+					</tr>
+				    {% endfor %}
+				</tbody>
+			</table>
+			<div class="pagination pagination-right">
+				<ul>
+					{% if host_list.has_previous %}
+					<li>
+						<a href="?page={{ host_list.previous_page_number }}">上一页</a>
+					</li>
+					{% endif %}
+					{% for i in max %}
+					{% ifequal i page_current_id %}
+					<li class="active">
+						<a href="?page={{ i }}">{{ i }}</a>
+					</li>
+					{% else %}
+					<li>
+						<a href="?page={{ i }}">{{ i }}</a>
+					</li>
+					{% endifequal %}
+ 					{% endfor %}
+					{% if host_list.has_next %}
+					<li>
+						<a href="?page={{ host_list.next_page_number }}">下一页</a>
+					</li>
+					{% endif %}
+				</ul>
+			</div>
+	</div>
+</div>
+	<script>
+    function detailFormatter(index, row) {
+        var html = [];
+        $.each(row, function (key, value) {
+			if(key.toString().match(/^\d/) && value == 'wuxi'){
+            	html.push('<p><b>' + key + ':</b> ' + value + '</p>');
+			}
+        });
+        return html.join('');
+    }
+</script>
+    {% endblock %}
+    </body>
+</html>

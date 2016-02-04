@@ -1,0 +1,175 @@
+{% extends "index.html" %}
+
+<html>
+	<head>
+		<title>{% block title %}batch{% endblock %}</title>
+	</head>
+	{% block content %}
+		<div class="row">
+			<hr></hr>
+			<div class='col-lg-12'>
+				<ol class="breadcrumb">
+					<li><a href="/batch">批量</a></li>
+					<li class="active">批量处理</li>
+				</ol>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class='col-lg-12 cm'>
+			<form  method="GET" class="form-horizontal" id='myform'>
+				<fieldset>
+					<div class="control-group">
+						<label class="control-label" for="name">选择组</label>
+						<div class="controls">
+							<select id="batch_group" multiple="multiple">
+								<optgroup label="主机组" id="group">
+								{% for g in groups %}
+    								<option value="{{ g.host_group.name }}">{{ g.host_group.name }}</option>
+								{% endfor %}
+								<optgroup label="主机" id="host">
+								{% for i in ips %}
+									<option value="{{ i.ip_address }}">{{ i.ip_address }}</option>
+								{% endfor %}
+								</optgroup>
+							</select>
+						</div>
+					</div>
+					
+					<div class="control-group">
+						<label class="control-label" for="name">命令行</label>
+						<div class="controls">
+							<div class="textarea">
+								<textarea id='command' rows="3" cols="60" style="font-size:22px"></textarea>
+							</div>
+						</div>
+					</div>
+
+					<div class="control-group">
+          				<div class="controls">
+           			 	<button id="submit" class="btn btn-success" name="api" type="submit">执行</button>
+          			</div>
+        	</div>
+
+				</fieldset>
+			</form>
+			</div>
+		</div>
+		
+		<br></br>
+		<div class="row">
+			<div class="col-lg-12">
+				
+				<label class="control-label" for="name"><span color="red">结果</span></label>
+				<div class="result">
+					<textarea id='command_result' rows="10" cols="100" contenteditable="true"></textarea>
+					<span id='st'></span>
+				</div>
+				<button type="button" class="btn btn-success" data-toggle="modal"  id="modal_result">详细结果</button>
+				<button type="button" class="btn btn-success" data-toggle="modal"  id="modal_error">错误信息</button>
+			</div>
+		<div>
+					<div class="modal fade" id="mymodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  						<div class="modal-dialog" role="document">
+    						<div class="modal-content">
+      							<div class="modal-header">
+        							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        							<h4 class="modal-title" id="myModalLabel">详细结果</h4>
+      							</div>
+      							<div class="modal-body" id="modal-content">
+									
+      							</div>
+      							<div class="modal-footer">
+        							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      							</div>
+    						</div>
+  						</div>
+					</div>
+
+		<script type="text/javascript">
+			var task_id = '';
+    		$(document).ready(function() {
+        		$('#batch_group').multiselect({
+				enableFiltering: true,
+            	filterBehavior: 'value'
+				})
+				
+				
+				$('#myform').submit(function(data){
+					$('#submit').attr('disabled','disabled');
+					var hosts = new Array(),groups=new Array();
+					$('#batch_group optgroup:eq(1)').find("option:selected").text(function(index,currenttext){
+							hosts[index]=currenttext;
+					});
+					$('#batch_group optgroup:eq(0)').find("option:selected").text(function(index,currenttext){
+							groups[index]=currenttext;
+					});
+					var sum='',success_count=0,failed_count=0,finish_time=0;
+					$('#command_result').html("command is running").css('color','blue');
+					var result_sum='';
+					var options = {
+						target:'#command_result',
+						clearForm:true,
+						traditional: true,
+						url:'/api',
+						type:'GET',
+						data:{'group': groups,
+							  'host':hosts,
+							  'command':$('#command').val(),
+							  },
+						success:function(data){ 
+							$.each(data,function(index,res){
+								if (index == 'task_id') {
+									task_id = res;
+									return true;
+								}
+								var tmp=index + ":"  + res.status + "\n";
+								if (res.status == 'success') success_count++;
+								if (res.status == 'failed') failed_count++;
+								sum += tmp;
+								var result_tmp=index + ":" + res.result;
+								result_sum += result_tmp;
+								
+							});
+							sum += "success server:" + success_count + " ";
+							sum += "failed server:" + failed_count + " "; 
+							$('#command_result').html(sum).html();
+							$('#submit').attr('disabled',false);
+							console.log(sum);
+							console.log(result_sum);
+						}
+					};
+					$('#myform').ajaxSubmit(options);
+					return false;
+				});
+    		});
+
+			$('#modal_result').on("click",function(callback){
+					var sum = "";
+					$.getJSON("{% url result %}",{'task_id':task_id,'command_type':'result'},function(data){
+						$.each(data,function(index,value){
+							var tmp="<p>" + "<font color=red>" + index + "</font>" + ":" + value.result + "</p>";
+							sum += tmp;	
+						});
+
+					$('#modal-content').html(sum);
+					});
+					$('#mymodal').modal("show");
+			});
+			$('#modal_error').on("click",function(callback){
+					var sum = "";
+					$.getJSON("{% url result %}",{'task_id':task_id,'command_type':'error'},function(data){
+						$.each(data,function(index,value){
+							var tmp="<p>" + "<font color=red>" + index + "</font>" + ":" + value.error + "</p>";
+							sum += tmp;	
+						});
+
+					$('#modal-content').html(sum);
+					});
+					$('#myModalLabel').html("错误信息");
+					$('#mymodal').modal("show");
+			});
+
+		</script>
+	{% endblock %}
+</html>	

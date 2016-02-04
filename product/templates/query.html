@@ -1,0 +1,40 @@
+{% extends "main.html" %}
+
+<html>
+	<head>
+		<title>{% block title %}query{% endblock %}</title>
+    </head>
+	<body>
+    {% block nav %}
+	<div class="span2">
+			<ul class="nav nav-list">
+				<li class="nav-header">
+				</li>
+				<li>
+					<a href="/main">服务器信息</a>
+				</li>
+                <li class="active">
+					<a href="/query/group">分组查询</a>
+				</li>
+                <li>
+					<a href="/query/service ">服务查询</a>
+				</li>
+				</li>
+			</ul>
+    {% endblock %}
+    
+
+			{% block table_tbody %}	
+                {% for h in entity %}
+                    <tr>
+                        <td>{{ h.ip_address }}</td>
+                        <td>{{ h.host_name }}</td>
+                        <td>{{ h.operation_system }}</td>
+                        <td>{{ h.group }}</td>
+                        <td>{{ h.data_center }}</td>
+                        <td>{{ h.cabinet }}</td>
+					<tr>
+                    {% endfor %}
+			{% endblock %}
+	</body>
+</html>

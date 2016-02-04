@@ -1,0 +1,114 @@
+{% extends "index.html" %}
+
+<html>
+	<head>
+		<title>{% block title %}add host{% endblock %}</title>
+	</head>
+    <body>
+	{% block content %}
+		<div class="row">
+			<hr></hr>
+			<div class="col-lg-12">
+				<ol class="breadcrumb">
+  					<li><a href="/">服务器</a></li>
+  					<li class="active">添加服务器</li>
+				</ol>
+			<div>
+		</div>
+		<div class="row">
+			<div class="col-lg-12">
+		<form action="/add_host" method="post" class="form-horizontal">
+			<fieldset>
+			<div id="legend" class="">
+        		<legend class="">基础信息</legend>
+      		</div>
+			<div class="control-group">
+				<label class="control-label" for="ip_address">ip地址:</label>
+				<div class="controls">
+    				<input id="ip_address" placeholder="1.1.1.1" type="text" name="ip_address" maxlength="100" />
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="host_name">主机名:</label>
+				<div class="controls">
+    				<input id="host_name" placeholder="wx170.adsame.com" type="text" name="host_name" maxlength="100" />
+				</div>
+			</div>
+
+			
+			<div class="control-group">
+				<label class="control-label" for="operation_system">操作系统</label>
+				<div class="controls">
+    				<input id="operation_system" placeholder="linux" type="text" name="operation_system" maxlength="100" />
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="group">服务</label>
+				<div class="controls">
+    				<input id="operation_system" placeholder="zookeeper,spark" type="text" name="group" maxlength="100" />
+				</div>
+			</div>
+
+
+			<div class="control-group">
+
+          		<label class="control-label" for="data_center">机房</label>
+          		<div class="controls">
+          	  		<select id="data_center" class="input-xlarge" name="data_center">
+						{% for d in data_center %}
+          	    		<option>{{ d.name }}</option>
+						{% endfor %}
+          	  		</select>
+          		</div>
+
+        	 </div>
+`
+			<div class="control-group">
+
+          		<label class="control-label" for="cabinet">机柜:</label>
+          		<div class="controls">
+          	  		<select id="cabinet" class="input-xlarge" name="cabinet">
+						{% for c in cabinet %}
+          	    		<option>{{ c.name }}</option>
+						{% endfor %}
+          	  		</select>
+          		</div>
+
+        	 </div>
+
+			<div id="legend" class="">
+        		<legend class="">硬件信息</legend>
+      		</div>
+
+			<div class="control-group">
+				<label class="control-label" for="cpu">cpu</label>
+				<div class="controls">
+    				<input id="cpu"  type="text" name="cpu" maxlength="100" />
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="disk_capcity">disk</label>
+				<div class="controls">
+    				<input id="disk_capcity" placeholder="100G" type="text" name="disk_capcity" maxlength="100" />
+					<p class="help-block">磁盘容量,100G</p>
+				</div>
+			</div>
+
+			 <div class="control-group">
+	
+          		<div class="controls">
+           			 <button class="btn btn-primary" name="submit" type="submit">保存</button>
+          		</div>
+        	</div>
+			</fieldset>
+		</form>		
+		</div>
+		</div>
+	</div>
+	{% endblock %}
+	</body>
+</html>
+ 

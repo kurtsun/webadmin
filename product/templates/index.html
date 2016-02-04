@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>adsame operation</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="/static/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- MetisMenu CSS -->
+    <link href="/static/bower_components/metisMenu/dist/metisMenu.min.css" rel="stylesheet">
+
+    <!-- Timeline CSS -->
+    <!--<link href="/static/bower_components/sb-admin/css/timeline.css" rel="stylesheet"> -->
+
+    <!-- Custom CSS -->
+    <link href="/static/bower_components/sb-admin/css/sb-admin-2.css" rel="stylesheet">
+ 		
+	<!-- table css -->
+	<link href="/static/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css" rel="stylesheet">
+
+    <!-- Morris Charts CSS -->
+    <!-- <link href="/static/bower_components/morrisjs/morris.css" rel="stylesheet"> -->
+
+    <!-- Custom Fonts -->
+    <link href="/static/bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="/static/bower_components/bootstrap-multiselect/dist/css/bootstrap-multiselect.css" rel="stylesheet" type="text/css">
+
+
+
+	<!-- jQuery -->
+    <script src="/static/bower_components/jquery/dist/jquery.min.js"></script>
+	<script src="/static/js/jquery.form.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="/static/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="/static/bower_components/metisMenu/dist/metisMenu.min.js"></script>
+
+	<script src="/static/bower_components/bootstrap-multiselect/dist/js/bootstrap-multiselect.js"></script>
+	<script src="/static/bower_components/bootstrap-table/dist/bootstrap-table.js"></script>
+	<script src="/static/bower_components/bootstrap-table/dist/locale/bootstrap-table-zh-CN.js"></script>
+	<script src="/static/bower_components/bootstrap-table/dist/extensions/cookie/bootstrap-table-cookie.js"></script>
+	<script src="/static/js/gateone.js"></script>
+    <!-- Custom Theme JavaScript -->
+    <script src="/static/bower_components/sb-admin/js/sb-admin-2.js"></script>
+
+
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+		{% block nav_top %}
+        <!-- Navigation -->
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="index.html">adsame 运维平台</a>
+            </div>
+            <!-- /.navbar-header -->
+
+            <ul class="nav navbar-top-links navbar-right">
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <!--<i class="fa fa-user fa-fw"></i><span>welcome,{{ request.user.userprofile.name }}</span><i class="fa fa-caret-down"></i>-->
+                        <i><span>welcome,{{ request.user.userprofile.name }} </span></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a  data-toggle='modal' data-target='#changepasswd' data-show='false'><i class="fa fa-user fa-fw"></i> User Profile</a>
+                        </li>
+                        <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li><a href="login.html"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-user -->
+                </li>
+                <!-- /.dropdown -->
+            </ul>
+            <!-- /.navbar-top-links -->
+					
+		 {% endblock %}
+					<div class="modal fade" id="changepasswd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  						<div class="modal-dialog" role="document">
+    						<div class="modal-content">
+      							<div class="modal-header">
+        							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        							<h4 class="modal-title" id="myModalLabel">详细结果</h4>
+      							</div>
+      							<div class="modal-body">
+									
+      							</div>
+      							<div class="modal-footer">
+        							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      							</div>
+    						</div>
+  						</div>
+					</div>
+
+
+		 {% block nav_left %}
+            <div class="navbar-default sidebar" role="navigation">
+                <div class="sidebar-nav navbar-collapse">
+                    <ul class="nav" id="side-menu">
+                        <li class="sidebar-search">
+                            <div class="input-group custom-search-form">
+                                <input type="text" class="form-control" placeholder="Search...">
+                                <span class="input-group-btn">
+                                <button class="btn btn-default" type="button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </span>
+                            </div>
+                            <!-- /input-group -->
+                        </li>
+                        <li>
+                            <a href="/main"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                        </li>
+                        <li>
+                            <a href="/"><i></i>服务器<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="/main">服务器列表</a>
+                                </li>
+                            </ul>
+                            <!-- /.nav-second-level -->
+                        </li>
+						<li>
+                            <a href="/remote_login"><i></i>远程登陆<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="/remote_login">登陆</a>
+                                </li>
+                                <li>
+                                    <a href="/login_view">登陆日志</a>
+                                </li>
+                            </ul>
+                        </li>
+						<li>
+                            <a href="/"><i></i>批量<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="/batch">批量处理</a>
+                                </li>
+                                <li>
+                                    <a href="/batch_log">批量日志</a>
+                                </li>
+                            </ul>
+                        </li>
+
+                    </ul>
+                </div>
+                <!-- /.sidebar-collapse -->
+            </div>
+            <!-- /.navbar-static-side -->
+        </nav>
+		{% endblock %}
+		
+
+        <div id="page-wrapper">
+			{% block content %}
+            <div class="row">
+                <div class="col-lg-12">
+                    <h3 class="page-header">Server</h3>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+		<!-- table -->
+
+		<!-- server dashboard -->
+		<div class="row">
+              <div class="widget widget-nopad">
+              <div class="widget big-stats-container">
+                  <div class="widget-content">
+                      <div id="big_stats" class="cf">
+                          <div class="stat">
+                              <i>servers</i>
+                              <span class="value">{{ host_length }}</span>
+                          </div>
+                          <div class="stat">
+                              <i>groups</i>
+                              <span class="value">{{ groups }}</span>
+                          </div>
+                          <div class="stat">
+                              <i>load high</i>
+                              <span class="value" id="load_high">0</span>
+                          </div>
+                          <div class="stat">
+                              <i>test3</i>
+                              <span class="value">0</span>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              </div>
+          </div>
+		<!-- server dashboard -->
+
+		<div class="row">               
+			<div class="col-lg-12">                   
+				<div class="panel panel-default">                       
+					<div class="panel-heading">
+						Hosts
+					</div>                       
+					<div class="panel-body">
+						<div class="dataTable_wrapper">
+					<form class="form-horizontal" method="get" action="?search=search">
+			 		<div class="control-group">
+
+          				<div class="pull-right controls">
+            					<input type="text" name="search" placeholder="search" class="input-xlarge search-query" style="width:150px;height:30px">
+          				</div>
+			
+        			</div>
+					</form>
+				<table id="table"
+                   class="table table-hover" 
+				   data-toggle="table"
+				   data-toolbar="#toolbar"
+				   data-detail-formatter="detailFormatter"
+                   data-detail-view="true"
+				   data-url="json/data.json">
+					
+				<thead>
+					<tr>
+						<th>
+							IP地址
+						</th>
+						<th>
+							主机名
+						</th>
+						<th>
+							操作系统
+						</th>
+						<th>
+							服务
+						</th>
+						<th>
+							磁盘
+						</th>
+						<th>
+							操作
+						</th>
+						<th data-field="hardware">
+							硬件信息
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for host in host_list %}
+                    <tr>
+						<td><a href="/remote_login/{{ host.host.ip_address }}">{{ host.ip_address }}<a></td>
+						<td>{{ host.host_name }}</td>
+			            <td>{{ host.operation_system }}</td>
+		  	            <td>{{ host.group }}</td>
+		  	            <td>
+							<div class="progress">
+								<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width:100%" id="{{ host.suffix_host_name }}_disk">100%</div>
+							</div>
+						</td>
+						<td><span class="label label-success" id="{{ host.suffix_host_name }}">负载良好</span>&nbsp<a href="https://{{ host.ip_address }}:5443?ssh=ssh://{{ host_user}}@{{host.host.ip_address}}:65533"><span class="label label-primary" style="display:none">登陆</span></td>
+						<td style="display:none;">{{ host.hardware }}</td>
+					</tr>
+				    {% endfor %}
+				</tbody>
+			</table>
+			<nav>
+				<ul class="pagination pull-right">
+					{% if host_list.has_previous %}
+					<li>
+						{% if search %}
+							<a href="?{{ search_key }}={{ search_value }}&page={{ host_list.previous_page_number }}">上一页</a>
+						{% else %}
+							<a href="?page={{ host_list.previous_page_number }}">上一页</a>
+						{% endif %}	
+					</li>
+					{% endif %}
+					{% for i in max %}
+					{% ifequal i page_current_id %}
+						<li class="active">
+							{% if search %}
+								<a id="search_href" href="?{{ search_key }}={{ search_value }}&page={{ i }}">{{ i }}</a>
+							{% else %}
+								<a  href="?page={{ i }}">{{ i }}</a>
+							{% endif %}
+						</li>
+					{% else %}
+					<li>
+						{% if search %}
+							<a id="search_href" href="?{{ search_key }}={{ search_value }}&page={{ i }}">{{ i }}</a>
+						{% else %}
+							<a href="?page={{ i }}">{{ i }}</a>
+						{% endif %}
+					</li>
+					{% endifequal %}
+ 					{% endfor %}
+					{% if host_list.has_next %}
+					<li>
+					{% if search %}
+							<a href="?{{ search_key }}={{ search_value }}&page={{ host_list.next_page_number }}">下一页</a>
+						{% else %}
+							<a href="?page={{ host_list.next_page_number }}">下一页</a>
+						{% endif %}	
+					</li>
+					{% endif %}
+				</ul>
+			</nav>
+			</div>
+			</div>
+				</div>
+        	</div>
+		</div>
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    
+</body>
+<script>
+	$(document).ready(function(){
+
+			setInterval(function(){
+				var load_high=0;
+				$.getJSON("{% url loadavg %}",function(data){
+					$.each(data,function(index,value){
+						if (value['load1min'] > 10 && value['load1min'] <= 20){
+							$("#"+value['host_name']).attr("class","label label-warning").text("负载较高");
+						}else if (value['load1min'] > 20) {
+							$("#"+value['host_name']).attr("class","label label-danger").text("负载很高");
+							load_high++;	
+						}else{
+							$("#"+value['host_name']).attr("class","label label-success").text("负载良好");
+						}
+					});
+					$("#load_high").text(load_high);
+				});
+			},5000);
+			
+			setInterval(function(){
+				$.getJSON("{% url disk %}",function(data){
+					$.each(data,function(index,value){
+						var root_volumn=value['disk']['/'];
+						var style_value=value['disk']['/'] + "%";
+						if( root_volumn >= 20 && root_volumn < 50 ) {
+							css_value="progress-bar progress-bar-warning";
+						}else if( root_volumn < 20){
+							css_value="progress-bar progress-bar-danger";
+						}else {
+							css_value="progress-bar progress-bar-success";
+						}
+						$("#"+value['host_name'] + "_disk").attr("class",css_value).width(style_value).text(value['disk']['/']+"%");
+					});	
+				});
+			},5000);
+	});
+	var $modaltable = $('#modaltable');
+    $(function () {
+        $('#modalTable').on('shown.bs.modal', function () {
+            $modaltable.bootstrapTable('resetView');
+        });
+    });
+	
+    function detailFormatter(index, row) {
+		var $table = $('#table');
+        var html = [];
+		var row_id = row[0];
+		//$table.location.reload();
+        $.each(row, function (key, value) {
+			if(key == 'hardware' && value != 'None') {
+				myhardware = eval('(' + value + ')');
+            	html.push('<p><b>' + "cpu" + ':</b> ' + myhardware['cpu'] + '</p>');
+            	html.push('<p><b>' + "disk" + ':</b> ' + myhardware['disk'] + '</p>');
+			}
+        });
+        return html.join('');
+    }
+</script>
+
+
+	<script>
+		var $table = $('#table');
+    	$(function () {
+            	$table.bootstrapTable('hideColumn', 'hardware');
+    });
+
+		$('#change').modal('show');
+	</script>
+	{% endblock %}
+
+</html>

@@ -6,6 +6,7 @@ import json
 
 #config={"avg":load_avg}
 
+
 class MultiProcess(object):
 	def __init__(self,task_func,func_name,*args):
 		self.task_func=task_func
@@ -25,33 +26,52 @@ class MultiProcess(object):
 	def get_result(self):
 		return self.result
 	
-	def addcallback(self,func):
-		return func(self.execute())
+	#def addcallback(self,func):
+	#	return func(self.execute())
 
-def handle_result(result_list):
-	ret={}
-	for r in result_list:
-		tmp={}
-		try:
-			result,ip,host_name = r.get()
-			tmp["load1min"],tmp['host_name']=result[0],host_name.split(".")[0]
-			ret[ip]=tmp
-		except:
-			pass
+	def addcallback(self,handler,key):
+		return handler.handle_result(self.execute(),key)
+
+
+class ResultHandle(object):
+
+	def handle_result(self,result_list,key):
+		ret={}
+		for r in result_list:
+			tmp={}
+			try:
+				result,ip,host_name = r.get()
+				tmp[key],tmp['host_name']=self.get_result(result),self.get_host_name(host_name)
+				ret[ip]=tmp
+			except:
+				pass
+
+		return 	HttpResponse(json.dumps(ret),content_type="application/json")
+
+	def get_result(self,result):
+		return result
 	
-	return 	HttpResponse(json.dumps(ret),content_type="application/json")
+	def get_host_name(self,host_name):
+		return host_name.split(".")[0]
 
-def handle_disk_result(result_list):
-	ret={}
-	for r in result_list:
-		tmp={}
-		try:
-			result,ip,host_name = r.get()
-			tmp['disk'],tmp['host_name']=result,host_name.split(".")[0]
-			ret[ip]=tmp
-		except:
-			pass
-	return HttpResponse(json.dumps(ret),content_type="application/json")
+
+class LoadResultHandle(ResultHandle):
+	def __init__(self):
+		ResultHandle.__init__(self)
+	
+	def handle_result(self,result_list,key):
+		return super(LoadResultHandle,self).handle_result(result_list,key)
+	
+	def get_result(self,result):
+		return result[0]
+
+class DiskResultHandle(ResultHandle):
+	def handle_result(self,result_list,key):
+		return super(DiskResultHandle,self).handle_result(result_list,key)
+				
+class MemResultHandle(ResultHandle):
+	def handle_result(self,result_list,key):
+		return super(MemResultHandle,self).handle_result(result_list,key)
 
 def get_bind_hosts(request):
 	bind_groups=request.user.userprofile.bind_groups.select_related()
@@ -61,11 +81,17 @@ def get_bind_hosts(request):
 
 	return hosts
 
+#def get_loadavg(request):
+#	return MultiProcess(get_rpc_func,"load_avg",get_bind_hosts(request)).addcallback(handle_result)
+
 def get_loadavg(request):
-	return MultiProcess(get_rpc_func,"load_avg",get_bind_hosts(request)).addcallback(handle_result)
+	return MultiProcess(get_rpc_func,"load_avg",get_bind_hosts(request)).addcallback(LoadResultHandle(),"load1min")
 
 def get_disk(request):
-	return MultiProcess(get_rpc_func,"get_disk_volumn",get_bind_hosts(request)).addcallback(handle_disk_result)
+	return MultiProcess(get_rpc_func,"get_disk_volumn",get_bind_hosts(request)).addcallback(DiskResultHandle(),"disk")
+
+def get_mem(request):
+	return MultiProcess(get_rpc_func,"get_mem_info",get_bind_hosts(request)).addcallback(MemResultHandle(),"mem")
 
 def get_rpc_func(host,func_name):
 	daemon=RPCCon(host.ip_address).connect()
